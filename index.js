@@ -10,6 +10,18 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/js/jquery.js', function(req, res){
+  res.sendFile(__dirname + '/js/jquery.js');
+});
+
+app.get('/js/jquery-ui.js', function(req, res){
+  res.sendFile(__dirname + '/js/jquery-ui.js');
+});
+
+app.get('/js/js.js', function(req, res){
+  res.sendFile(__dirname + '/js/js.js');
+});
+
 io.on('connection', function(socket){
   console.log('a user connected');
   
@@ -20,6 +32,13 @@ io.on('connection', function(socket){
   socket.on('chat message', function(msg){
     console.log('message: ' + msg);
     io.emit('chat message', msg);
+  });
+
+  socket.on('element dragged', function(dragObj){
+    console.log('drag object: ');
+    console.log(dragObj)
+    // io.emit('element dragged', dragObj);
+    socket.broadcast.emit('element dragged', dragObj);
   });
   
 });
