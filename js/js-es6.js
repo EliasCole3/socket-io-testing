@@ -64,21 +64,29 @@ let abc = {
 
   assignHandlerAddDiv: () => {
     $("#add-div").click(e => {
-      let ranTop = ebot.getRandomInt(100, 500)
-      let ranLeft = ebot.getRandomInt(100, 500)
-      let randomColor = `rgba(${ebot.getRandomInt(0, 255)}, ${ebot.getRandomInt(0, 255)}, ${ebot.getRandomInt(0, 255)}, 0.8)`
-      let id = `dynamically-added-div-${abc.currentDynamicDivId}`
-      let htmlString = `<div id='${id}' style='position:absolute; top:${ranTop}px; left:${ranLeft}px; background-color: ${randomColor}; width: 100px; height: 100px;'></div>`
-      $("body").append(htmlString)
-      $(`#${id}`).resizable().draggable(abc.draggableOptions) 
-
+      abc.createNewWireframeDiv()
       abc.socket.emit('div added')
-      abc.currentDynamicDivId++
     })
 
     abc.socket.on('div added', () => {
-      $("#add-div").click()
+      // $("#add-div").click()
+      abc.createNewWireframeDiv()
     })
+
+    abc.socket.on('element resized', emitObj => {
+      $(`#${emitObj.id}`).css("width", emitObj.width).css("height", emitObj.height)
+    })
+  },
+
+  createNewWireframeDiv: () => {
+    let ranTop = ebot.getRandomInt(100, 500)
+    let ranLeft = ebot.getRandomInt(100, 500)
+    let randomColor = `rgba(${ebot.getRandomInt(0, 255)}, ${ebot.getRandomInt(0, 255)}, ${ebot.getRandomInt(0, 255)}, 0.8)`
+    let id = `dynamically-added-div-${abc.currentDynamicDivId}`
+    let htmlString = `<div id='${id}' style='position:absolute; top:${ranTop}px; left:${ranLeft}px; background-color: ${randomColor}; width: 100px; height: 100px;'></div>`
+    $("body").append(htmlString)
+    $(`#${id}`).resizable(abc.resizableOptions).draggable(abc.draggableOptions)
+    abc.currentDynamicDivId++
   },
 
   dragDelay: 1,
@@ -91,13 +99,48 @@ let abc = {
 
   draggableOptions: {
     drag: (event, ui) => {
+      console.log(event)
       let emitObj = {
         id: ui.helper[0].id,
         x: event.clientX,
         y: event.clientY
+
+        //same
+        // x: event.pageX,
+        // y: event.pageY
+
+        //worse
+        // x: event.screenX,
+        // y: event.screenY
+
+        //this is only how much it moved in each drag action, doesn't work at all
+        // x: event.offsetX,
+        // y: event.offsetY
       }
 
+      //clientX
+      //screenX
+      //pageX
+      //offsetX
+
       abc.socket.emit('element dragged', emitObj)
+    }
+  },
+
+  resizableOptions: {
+    // $( ".selector" ).on( "resize", function( event, ui ) {} )
+    resize: (event, ui) => {
+      // console.log(ui)
+      // console.log(ui.size.height)
+      // console.log(ui.element[0].id)
+
+      let emitObj = {
+        id: ui.element[0].id,
+        height: ui.size.height,
+        width: ui.size.width
+      }
+
+      abc.socket.emit('element resized', emitObj)
     }
   }
 

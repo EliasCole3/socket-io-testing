@@ -85,6 +85,10 @@ io.on('connection', function(socket) {
     socket.broadcast.emit('element dragged', dragObj)
   })
 
+  socket.on('element resized', function(emitObj) {
+    socket.broadcast.emit('element resized', emitObj)
+  })
+
   socket.on('div added', function() {
     socket.broadcast.emit('div added')
   })
