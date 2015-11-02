@@ -2,38 +2,38 @@
 <html>
   <head>
     <title>Socket.IO chat</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-      
-      #draggable {
-        width: 100px;
-        height: 100px;
-        background-color: blue;
-      }
-    </style>
-    
+
+    <link rel="stylesheet" type="text/css" media="screen" href="css/css.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/vis.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/jquery-ui.css" />
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/moment.js"></script>
+    <script type="text/javascript" src="js/vis.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <script type="text/javascript" src="js/inflection.js"></script>
+    <script type="text/javascript" src="js/deepcopy.js"></script>
+    <script type="text/javascript" src="js/socket-io.js"></script>
+    <script type="text/javascript" src="js/ebot.js"></script>
     <script type="text/javascript" src="js/js.js"></script>
     
   </head>
   <body>
   
     <div id='draggable' class=''>Drag me!</div>
+
+    <!-- <div id='resizable-test' class=''>Resizeable Test</div> -->
+
+
+
+    <button id='add-div' class='btn btn-lg'>Add div</button>
   
     <ul id="messages"></ul>
+
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
-    
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 
   </body>
 </html>
