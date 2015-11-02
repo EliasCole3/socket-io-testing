@@ -34,26 +34,6 @@ var abc = {
 
   assignHanderDrag: function assignHanderDrag() {
 
-    // let draggableOptions = {
-    //   //grid: [ 50, 20 ],
-    //   drag: (event, ui) => {
-    //     // console.log("X: " + event.clientX)
-    //     // console.log("Y: " + event.clientY)
-    //     // console.log(ui)
-    //     // console.log(event)
-    //     // console.log(ui.helper[0].id)
-
-    //     let emitObj = {
-    //       id: ui.helper[0].id,
-    //       x: event.clientX,
-    //       y: event.clientY
-    //     }
-
-    //     abc.socket.emit('element dragged', emitObj)
-
-    //   }
-    // }
-
     $("#draggable").draggable(abc.draggableOptions);
 
     abc.socket.on('element dragged', function (emitObj) {
@@ -69,7 +49,6 @@ var abc = {
     });
 
     abc.socket.on('div added', function () {
-      // $("#add-div").click()
       abc.createNewWireframeDiv();
     });
 
@@ -118,22 +97,12 @@ var abc = {
         // y: event.offsetY
       };
 
-      //clientX
-      //screenX
-      //pageX
-      //offsetX
-
       abc.socket.emit('element dragged', emitObj);
     }
   },
 
   resizableOptions: {
-    // $( ".selector" ).on( "resize", function( event, ui ) {} )
     resize: function resize(event, ui) {
-      // console.log(ui)
-      // console.log(ui.size.height)
-      // console.log(ui.element[0].id)
-
       var emitObj = {
         id: ui.element[0].id,
         height: ui.size.height,
