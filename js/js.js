@@ -5,6 +5,21 @@ $(function () {
   // ebot.updateDocumentation(abc)
 });
 
+/**
+ * initialize()
+ * assignInitialHandlers()
+ * assignHandlerChat()
+ * assignHanderDrag()
+ * assignHandlerAddDiv()
+ * createNewWireframeDiv()
+ *
+ * dragDelay
+ * dragCounter
+ * socket
+ * currentDynamicDivId
+ * draggableOptions
+ * resizableOptions
+ */
 var abc = {
 
   initialize: function initialize() {
@@ -37,8 +52,16 @@ var abc = {
     $("#draggable").draggable(abc.draggableOptions);
 
     abc.socket.on('element dragged', function (emitObj) {
+      console.log("");
+      console.log(emitObj.y);
+      console.log(emitObj.x);
+      console.log($('#' + emitObj.id).css("top"));
+      console.log($('#' + emitObj.id).css("left"));
       $('#' + emitObj.id).css("top", emitObj.y);
       $('#' + emitObj.id).css("left", emitObj.x);
+      console.log($('#' + emitObj.id).css("top"));
+      console.log($('#' + emitObj.id).css("left"));
+      console.log("");
     });
   },
 
@@ -53,6 +76,7 @@ var abc = {
     });
 
     abc.socket.on('element resized', function (emitObj) {
+      // console.log(emitObj)
       $('#' + emitObj.id).css("width", emitObj.width).css("height", emitObj.height);
     });
   },
@@ -63,7 +87,7 @@ var abc = {
     var randomColor = 'rgba(' + ebot.getRandomInt(0, 255) + ', ' + ebot.getRandomInt(0, 255) + ', ' + ebot.getRandomInt(0, 255) + ', 0.8)';
     var id = 'dynamically-added-div-' + abc.currentDynamicDivId;
     var htmlString = '<div id=\'' + id + '\' style=\'position:absolute; top:' + ranTop + 'px; left:' + ranLeft + 'px; background-color: ' + randomColor + '; width: 100px; height: 100px;\'></div>';
-    $("body").append(htmlString);
+    $("#wrapper").append(htmlString);
     $('#' + id).resizable(abc.resizableOptions).draggable(abc.draggableOptions);
     abc.currentDynamicDivId++;
   },
@@ -79,10 +103,16 @@ var abc = {
   draggableOptions: {
     drag: function drag(event, ui) {
       console.log(event);
+      console.log(ui);
       var emitObj = {
         id: ui.helper[0].id,
-        x: event.clientX,
-        y: event.clientY
+
+        x: $(ui.helper[0]).css("left"),
+        y: $(ui.helper[0]).css("top")
+
+        //original
+        // x: event.clientX,
+        // y: event.clientY
 
         //same
         // x: event.pageX,
@@ -97,6 +127,7 @@ var abc = {
         // y: event.offsetY
       };
 
+      console.log(emitObj);
       abc.socket.emit('element dragged', emitObj);
     }
   },

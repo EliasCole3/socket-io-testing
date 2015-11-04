@@ -3,6 +3,23 @@ $(() => {
   // ebot.updateDocumentation(abc)
 })
 
+
+
+/**
+ * initialize()
+ * assignInitialHandlers()
+ * assignHandlerChat()
+ * assignHanderDrag()
+ * assignHandlerAddDiv()
+ * createNewWireframeDiv()
+ *
+ * dragDelay
+ * dragCounter
+ * socket
+ * currentDynamicDivId
+ * draggableOptions
+ * resizableOptions
+ */
 let abc = {
   
   initialize: () => {
@@ -36,8 +53,16 @@ let abc = {
     $("#draggable").draggable(abc.draggableOptions)
     
     abc.socket.on('element dragged', emitObj => {
+      console.log("")
+      console.log(emitObj.y)
+      console.log(emitObj.x)
+      console.log($('#' + emitObj.id).css("top"))
+      console.log($('#' + emitObj.id).css("left"))
       $('#' + emitObj.id).css("top", emitObj.y)
       $('#' + emitObj.id).css("left", emitObj.x)
+      console.log($('#' + emitObj.id).css("top"))
+      console.log($('#' + emitObj.id).css("left"))
+      console.log("")
     })
 
   },
@@ -53,6 +78,7 @@ let abc = {
     })
 
     abc.socket.on('element resized', emitObj => {
+      // console.log(emitObj)
       $(`#${emitObj.id}`).css("width", emitObj.width).css("height", emitObj.height)
     })
   },
@@ -63,7 +89,7 @@ let abc = {
     let randomColor = `rgba(${ebot.getRandomInt(0, 255)}, ${ebot.getRandomInt(0, 255)}, ${ebot.getRandomInt(0, 255)}, 0.8)`
     let id = `dynamically-added-div-${abc.currentDynamicDivId}`
     let htmlString = `<div id='${id}' style='position:absolute; top:${ranTop}px; left:${ranLeft}px; background-color: ${randomColor}; width: 100px; height: 100px;'></div>`
-    $("body").append(htmlString)
+    $("#wrapper").append(htmlString)
     $(`#${id}`).resizable(abc.resizableOptions).draggable(abc.draggableOptions)
     abc.currentDynamicDivId++
   },
@@ -79,10 +105,17 @@ let abc = {
   draggableOptions: {
     drag: (event, ui) => {
       console.log(event)
+      console.log(ui)
       let emitObj = {
         id: ui.helper[0].id,
-        x: event.clientX,
-        y: event.clientY
+
+
+        x: $(ui.helper[0]).css("left"),
+        y: $(ui.helper[0]).css("top")
+
+        //original
+        // x: event.clientX,
+        // y: event.clientY
 
         //same
         // x: event.pageX,
@@ -97,6 +130,7 @@ let abc = {
         // y: event.offsetY
       }
 
+      console.log(emitObj)
       abc.socket.emit('element dragged', emitObj)
     }
   },

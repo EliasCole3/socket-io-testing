@@ -12,3 +12,10 @@ form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 
   height: 100px;
   background-color: blue;
 }
+
+#wrapper {
+  background-color: lightblue;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
