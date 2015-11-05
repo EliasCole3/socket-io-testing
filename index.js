@@ -2,10 +2,6 @@ var app = require('express')()
 var http = require('http').Server(app)
 var io = require('socket.io')(http)
 
-// app.get('/', function(req, res) {
-  // res.send('hiiiii~')
-// }) 
-
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html')
 })
@@ -66,11 +62,32 @@ app.get('/css/jquery-ui.css', function(req, res) {
   res.sendFile(__dirname + '/css/jquery-ui.css')
 })
 
+app.get('/node_modules/howler/howler.js', function(req, res) {
+  res.sendFile(__dirname + '/node_modules/howler/howler.js')
+})
+
+app.get('/sounds/me-ding.wav', function(req, res) {
+  res.sendFile(__dirname + '/sounds/me-ding.wav')
+})
+
+app.get('/sounds/me-user-connected.wav', function(req, res) {
+  res.sendFile(__dirname + '/sounds/me-user-connected.wav')
+})
+
+app.get('/sounds/me-user-disconnected.wav', function(req, res) {
+  res.sendFile(__dirname + '/sounds/me-user-disconnected.wav')
+})
+
+
+
+
 io.on('connection', function(socket) {
   console.log('a user connected')
+  io.emit('user connected');
   
   socket.on('disconnect', function() {
     console.log('user disconnected')
+    io.emit('user disconnected')
   })
   
   socket.on('chat message', function(msg) {
@@ -98,3 +115,28 @@ io.on('connection', function(socket) {
 http.listen(3000, function() {
   console.log('listening on *:3000')
 })
+
+
+ // // sending to sender-client only
+ // socket.emit('message', "this is a test");
+
+ // // sending to all clients, include sender
+ // io.emit('message', "this is a test");
+
+ // // sending to all clients except sender
+ // socket.broadcast.emit('message', "this is a test");
+
+ // // sending to all clients in 'game' room(channel) except sender
+ // socket.broadcast.to('game').emit('message', 'nice game');
+
+ // // sending to all clients in 'game' room(channel), include sender
+ // io.in('game').emit('message', 'cool game');
+
+ // // sending to sender client, only if they are in 'game' room(channel)
+ // socket.to('game').emit('message', 'enjoy the game');
+
+ // // sending to all clients in namespace 'myNamespace', include sender
+ // io.of('myNamespace').emit('message', 'gg');
+
+ // // sending to individual socketid
+ // socket.broadcast.to(socketid).emit('message', 'for your eyes only');

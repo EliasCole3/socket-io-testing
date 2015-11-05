@@ -8,9 +8,9 @@ $(function () {
 /**
  * initialize()
  * assignInitialHandlers()
- * assignHandlerChat()
- * assignHanderDrag()
- * assignHandlerAddDiv()
+ * handlerChat()
+ * handlerDrag()
+ * handlerAddDiv()
  * createNewWireframeDiv()
  *
  * dragDelay
@@ -26,49 +26,24 @@ var abc = {
     abc.socket = io();
     abc.assignInitialHandlers();
 
-    // $("#resizable-test").resizable().css("width", "100px").css("height", "100px").css("background-color", "pink")
+    abc.handlerTestSound();
   },
 
   assignInitialHandlers: function assignInitialHandlers() {
-    abc.assignHandlerChat();
-    abc.assignHanderDrag();
-    abc.assignHandlerAddDiv();
+    abc.handlerChat();
+    abc.handlerDrag();
+    abc.handlerAddDiv();
+    abc.handlersSocketEventReceived();
   },
 
-  assignHandlerChat: function assignHandlerChat() {
-    $('form').submit(function () {
-      abc.socket.emit('chat message', $('#m').val());
-      $('#m').val('');
-      return false;
-    });
-
+  handlersSocketEventReceived: function handlersSocketEventReceived() {
     abc.socket.on('chat message', function (msg) {
       $('#messages').append($('<li>').text(msg));
     });
-  },
-
-  assignHanderDrag: function assignHanderDrag() {
-
-    $("#draggable").draggable(abc.draggableOptions);
 
     abc.socket.on('element dragged', function (emitObj) {
-      console.log("");
-      console.log(emitObj.y);
-      console.log(emitObj.x);
-      console.log($('#' + emitObj.id).css("top"));
-      console.log($('#' + emitObj.id).css("left"));
       $('#' + emitObj.id).css("top", emitObj.y);
       $('#' + emitObj.id).css("left", emitObj.x);
-      console.log($('#' + emitObj.id).css("top"));
-      console.log($('#' + emitObj.id).css("left"));
-      console.log("");
-    });
-  },
-
-  assignHandlerAddDiv: function assignHandlerAddDiv() {
-    $("#add-div").click(function (e) {
-      abc.createNewWireframeDiv();
-      abc.socket.emit('div added');
     });
 
     abc.socket.on('div added', function () {
@@ -76,8 +51,34 @@ var abc = {
     });
 
     abc.socket.on('element resized', function (emitObj) {
-      // console.log(emitObj)
       $('#' + emitObj.id).css("width", emitObj.width).css("height", emitObj.height);
+    });
+
+    abc.socket.on('user connected', function () {
+      abc.playSound("me-user-connected");
+    });
+
+    abc.socket.on('user disconnected', function () {
+      abc.playSound("me-user-disconnected");
+    });
+  },
+
+  handlerChat: function handlerChat() {
+    $('form').submit(function () {
+      abc.socket.emit('chat message', $('#m').val());
+      $('#m').val('');
+      return false;
+    });
+  },
+
+  handlerDrag: function handlerDrag() {
+    $("#draggable").draggable(abc.draggableOptions);
+  },
+
+  handlerAddDiv: function handlerAddDiv() {
+    $("#add-div").click(function (e) {
+      abc.createNewWireframeDiv();
+      abc.socket.emit('div added');
     });
   },
 
@@ -92,42 +93,32 @@ var abc = {
     abc.currentDynamicDivId++;
   },
 
-  dragDelay: 1,
+  handlerTestSound: function handlerTestSound() {
+    $("#test").click(function (e) {
+      abc.playSoundDing();
+    });
+  },
 
-  dragCounter: 0,
+  playSoundDing: function playSoundDing() {
+    var sound = new Howl({
+      urls: ['/sounds/me-ding.wav']
+    }).play();
+  },
 
-  socket: {},
-
-  currentDynamicDivId: 1,
+  playSound: function playSound(sound) {
+    var soundUnique = new Howl({
+      urls: ['/sounds/' + sound + '.wav']
+    }).play();
+  },
 
   draggableOptions: {
     drag: function drag(event, ui) {
-      console.log(event);
-      console.log(ui);
       var emitObj = {
         id: ui.helper[0].id,
-
         x: $(ui.helper[0]).css("left"),
         y: $(ui.helper[0]).css("top")
-
-        //original
-        // x: event.clientX,
-        // y: event.clientY
-
-        //same
-        // x: event.pageX,
-        // y: event.pageY
-
-        //worse
-        // x: event.screenX,
-        // y: event.screenY
-
-        //this is only how much it moved in each drag action, doesn't work at all
-        // x: event.offsetX,
-        // y: event.offsetY
       };
 
-      console.log(emitObj);
       abc.socket.emit('element dragged', emitObj);
     }
   },
@@ -142,7 +133,15 @@ var abc = {
 
       abc.socket.emit('element resized', emitObj);
     }
-  }
+  },
+
+  dragDelay: 1,
+
+  dragCounter: 0,
+
+  socket: {},
+
+  currentDynamicDivId: 1
 
 };
 //# sourceMappingURL=js.js.map
